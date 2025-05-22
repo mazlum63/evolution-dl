@@ -7,7 +7,7 @@ const context = canvas!.getContext("2d") as CanvasRenderingContext2D;
 
 const terrain = new Terrain(canvas.width, canvas.height);
 
-const animal = new Animal(100, 100);
+const animal = new Animal(500, 500);
 
 animate();
 

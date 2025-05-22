@@ -11,6 +11,7 @@ export class Animal {
   y: number;
   sensor: Sensor;
   movement: Movement;
+  polygon: Coordinate[] = [];
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
@@ -22,6 +23,18 @@ export class Animal {
   update(terrainBorders: Coordinate[][]) {
     this.#move();
     this.sensor.update(terrainBorders);
+  }
+
+  #createPolygon() {
+    var newPoint1: Coordinate = { x: -this.width / 2, y: -this.height / 2 };
+    var newPoint2: Coordinate = { x: this.width / 2, y: -this.height / 2 };
+    var newPoint3: Coordinate = { x: this.width / 2, y: this.height / 2 };
+    var newPoint4: Coordinate = { x: -this.width / 2, y: this.height / 2 };
+
+    this.polygon.push(newPoint1);
+    this.polygon.push(newPoint2);
+    this.polygon.push(newPoint3);
+    this.polygon.push(newPoint4);
   }
   #move() {
     this.speed = 0;
@@ -46,16 +59,20 @@ export class Animal {
   }
 
   draw(context: CanvasRenderingContext2D) {
+    this.sensor.draw(context);
     context.save();
     context.translate(this.x, this.y);
     context.rotate(-this.angle);
 
+    this.#createPolygon();
     context.beginPath();
-    context.rect(-this.width / 2, -this.height / 2, this.width, this.height);
+    context.moveTo(this.polygon[0].x, this.polygon[0].y);
+    context.lineTo(this.polygon[1].x, this.polygon[1].y);
+    context.lineTo(this.polygon[2].x, this.polygon[2].y);
+    context.lineTo(this.polygon[3].x, this.polygon[3].y);
+
     context.fillStyle = "#000";
     context.fill();
-
     context.restore();
-    this.sensor.draw(context);
   }
 }
