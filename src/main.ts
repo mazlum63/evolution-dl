@@ -7,15 +7,13 @@ const context = canvas!.getContext("2d") as CanvasRenderingContext2D;
 
 const terrain = new Terrain(canvas.width, canvas.height);
 
-const animal = new Animal(500, 500);
-
+const animal = new Animal(500, 500, terrain);
 animate();
 
 function animate() {
   context.clearRect(0, 0, canvas.width, canvas.height);
 
   animal.update(terrain.borders);
-
   terrain.draw(context);
   animal.draw(context);
   requestAnimationFrame(animate);
