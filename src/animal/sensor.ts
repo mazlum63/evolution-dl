@@ -1,7 +1,7 @@
-import type{ Coordinate } from "@models/coordinate.js";
+import type { Coordinate } from "@models/coordinate.js";
 import { getIntersection, lerp } from "../utils/utils.js";
 import { Animal } from "./animal.js";
-import type{ Reading } from "@models/reading.js";
+import type { Reading } from "@models/reading.js";
 
 export class Sensor {
   animal: Animal;
@@ -14,7 +14,7 @@ export class Sensor {
     this.animal = animal;
   }
 
-  update(terrainBorders: Coordinate[][]) {
+  update(terrainBorders: Coordinate[]) {
     this.readings = [];
     this.#castRays();
     this.rays.forEach((r: Coordinate[]) => {
@@ -24,20 +24,20 @@ export class Sensor {
 
   #getReadings(
     ray: Coordinate[],
-    terrainBorders: Coordinate[][]
+    terrainBorders: Coordinate[]
   ): Reading | null {
     let intersections: Array<Reading | null> = [];
-    terrainBorders.forEach((rb) => {
+    for (let i = 0; i < terrainBorders.length; i++) {
       const intersection: Reading | null = getIntersection(
         ray[0],
         ray[1],
-        rb[0],
-        rb[1]
+        terrainBorders[i],
+        terrainBorders[(i + 1) % terrainBorders.length]
       );
       if (intersection) {
         intersections.push(intersection);
       }
-    });
+    }
     if (intersections.length == 0) {
       return null;
     } else {

@@ -1,31 +1,28 @@
-import type{ Coordinate } from "@models/coordinate";
+import type { Coordinate } from "@models/coordinate";
 
 export class Terrain {
-  distance: number = 300;
+  distance: number = 30;
   width: number;
   height: number;
-  borders: Coordinate[][];
+  borders: Coordinate[];
   constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
-    const topLeft = { x: this.distance, y: this.distance };
-    const bottomLeft = { x: this.distance, y: this.height - this.distance };
-    const topRight = { x: this.width - this.distance, y: this.distance };
-    const bottomRight = {
-      x: this.width - this.distance,
-      y: this.height - this.distance,
-    };
     this.borders = [
-      [topLeft, bottomLeft],
-      [topRight, bottomRight],
-      [topLeft, topRight],
-      [bottomLeft, bottomRight],
+      { x: this.distance, y: this.distance },
+      { x: this.width - this.distance, y: this.distance },
+      { x: this.width - this.distance, y: this.height - this.distance },
+      { x: this.distance, y: this.height - this.distance },
     ];
   }
   draw(context: CanvasRenderingContext2D) {
-    this.borders.forEach((border) => {
-      this.drawLine(border[0], border[1], context);
-    });
+    for (let i = 0; i < this.borders.length; i++) {
+      this.drawLine(
+        this.borders[i],
+        this.borders[(i + 1) % this.borders.length],
+        context
+      );
+    }
   }
 
   drawLine(A: Coordinate, B: Coordinate, context: CanvasRenderingContext2D) {

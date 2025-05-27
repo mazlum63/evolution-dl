@@ -27,15 +27,15 @@ export class Animal {
     this.terrain = terrain;
   }
 
-  update(terrainBorders: Coordinate[][]) {
+  update(terrainBorders: Coordinate[]) {
     this.#move();
     this.polygon = this.#createPolygon();
     this.damaged = this.#assessDamage(terrainBorders);
     this.sensor.update(terrainBorders);
   }
-  #assessDamage(terrainBorders: Coordinate[][]) {
+  #assessDamage(terrainBorders: Coordinate[]) {
     for (let i = 0; i < terrainBorders.length; i++) {
-      if (polysIntersect(this.polygon, terrainBorders[i])) {
+      if (polysIntersect(this.polygon, terrainBorders)) {
         return true;
       }
     }
