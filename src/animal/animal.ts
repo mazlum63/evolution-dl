@@ -1,69 +1,33 @@
 import type { Coordinate } from "@models/coordinate.js";
 import { Movement } from "./movement.js";
 import { Sensor } from "./sensor.js";
-import { polysIntersect } from "../utils/utils.js";
 import { Terrain } from "../terrain/terrain.js";
+import { Entity } from "../terrain/entity.js";
+import type { Fruit } from "../terrain/fruit.js";
 
-export class Animal {
-  width: number = 30;
-  height: number = 30;
+export class Animal extends Entity {
   speed: number = 0;
-  angle: number = 0;
-  x: number;
-  y: number;
-
-  terrain: Terrain;
-
-  damaged: boolean = false;
   sensor: Sensor;
   movement: Movement;
-  polygon: Coordinate[] = this.#createPolygon();
-  constructor(x: number, y: number, terrain: Terrain) {
-    this.x = x;
-    this.y = y;
+  constructor(x: number, y: number, terrain: Terrain, isUser: boolean = false) {
+    super(terrain, x, y, 30, 30, 0);
     this.sensor = new Sensor(this);
 
-    this.movement = new Movement();
+    this.movement = new Movement(isUser);
     this.terrain = terrain;
   }
 
-  update(terrainBorders: Coordinate[]) {
-    this.#move();
-    this.polygon = this.#createPolygon();
-    this.damaged = this.#assessDamage(terrainBorders);
-    this.sensor.update(terrainBorders);
+  override update(
+    terrainBorders: Coordinate[],
+    animals: Animal[],
+    fruits: Fruit[]
+  ) {
+    this.move();
+    this.sensor.update(terrainBorders, animals, fruits);
+    super.update(terrainBorders, animals, fruits);
   }
-  #assessDamage(terrainBorders: Coordinate[]) {
-    for (let i = 0; i < terrainBorders.length; i++) {
-      if (polysIntersect(this.polygon, terrainBorders)) {
-        return true;
-      }
-    }
-    return false;
-  }
-  #createPolygon(): Coordinate[] {
-    const radiant = Math.hypot(this.width, this.height) / 2;
-    const alpha = Math.atan2(this.width, this.height);
-    return [
-      {
-        x: this.x - Math.sin(this.angle - alpha) * radiant,
-        y: this.y - Math.cos(this.angle - alpha) * radiant,
-      },
-      {
-        x: this.x - Math.sin(this.angle + alpha) * radiant,
-        y: this.y - Math.cos(this.angle + alpha) * radiant,
-      },
-      {
-        x: this.x - Math.sin(Math.PI + this.angle - alpha) * radiant,
-        y: this.y - Math.cos(Math.PI + this.angle - alpha) * radiant,
-      },
-      {
-        x: this.x - Math.sin(Math.PI + this.angle + alpha) * radiant,
-        y: this.y - Math.cos(Math.PI + this.angle + alpha) * radiant,
-      },
-    ];
-  }
-  #move() {
+
+  private move() {
     this.speed = 0;
     if (this.movement?.forward) {
       this.speed = 2;
@@ -95,27 +59,8 @@ export class Animal {
     }
   }
 
-  draw(context: CanvasRenderingContext2D) {
+  override draw(context: CanvasRenderingContext2D) {
     this.sensor.draw(context);
-
-    context.beginPath();
-    if (this.damaged) {
-      context.fillStyle = "#ccc";
-      context.strokeStyle = "#ccc";
-    } else {
-      context.fillStyle = "#000";
-      context.strokeStyle = "#000";
-    }
-    for (let i = 0; i < this.polygon.length; i++) {
-      context.rect(this.polygon[i].x - 2, this.polygon[i].y - 2, 4, 4);
-      context.moveTo(this.polygon[i].x, this.polygon[i].y);
-      context.lineTo(
-        this.polygon[(i + 1) % this.polygon.length].x,
-        this.polygon[(i + 1) % this.polygon.length].y
-      );
-    }
-
-    context.stroke();
-    context.fill();
+    super.draw(context);
   }
 }

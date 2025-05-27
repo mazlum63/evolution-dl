@@ -2,6 +2,8 @@ import type { Coordinate } from "@models/coordinate.js";
 import { getIntersection, lerp } from "../utils/utils.js";
 import { Animal } from "./animal.js";
 import type { Reading } from "@models/reading.js";
+import type { Fruit } from "../terrain/fruit.js";
+import type { Entity } from "../terrain/entity.js";
 
 export class Sensor {
   animal: Animal;
@@ -14,30 +16,28 @@ export class Sensor {
     this.animal = animal;
   }
 
-  update(terrainBorders: Coordinate[]) {
+  public update(
+    terrainBorders: Coordinate[],
+    animals: Animal[],
+    fruits: Fruit[]
+  ) {
     this.readings = [];
-    this.#castRays();
+    this.castRays();
     this.rays.forEach((r: Coordinate[]) => {
-      this.readings.push(this.#getReadings(r, terrainBorders));
+      this.readings.push(this.getReadings(r, terrainBorders, animals, fruits));
     });
   }
 
-  #getReadings(
+  private getReadings(
     ray: Coordinate[],
-    terrainBorders: Coordinate[]
+    terrainBorders: Coordinate[],
+    animals: Animal[],
+    fruits: Fruit[]
   ): Reading | null {
     let intersections: Array<Reading | null> = [];
-    for (let i = 0; i < terrainBorders.length; i++) {
-      const intersection: Reading | null = getIntersection(
-        ray[0],
-        ray[1],
-        terrainBorders[i],
-        terrainBorders[(i + 1) % terrainBorders.length]
-      );
-      if (intersection) {
-        intersections.push(intersection);
-      }
-    }
+    intersections.push(...this.handleRayIntersection(ray, terrainBorders, null));
+    intersections.push(...this.handleRayEntityIntersection(ray, animals));
+    intersections.push(...this.handleRayEntityIntersection(ray, fruits));
     if (intersections.length == 0) {
       return null;
     } else {
@@ -49,7 +49,7 @@ export class Sensor {
     }
   }
 
-  draw(context: CanvasRenderingContext2D) {
+  public draw(context: CanvasRenderingContext2D) {
     for (let i = 0; i < this.rayCount; i++) {
       let endPoint: Coordinate | Reading | null = this.rays[i][1];
       if (this.readings[i]) {
@@ -72,7 +72,7 @@ export class Sensor {
     }
   }
 
-  #castRays() {
+  private castRays() {
     this.rays = [];
     for (let i = 0; i < this.rayCount; i++) {
       const rayAngle =
@@ -87,5 +87,39 @@ export class Sensor {
 
       this.rays.push([start, end]);
     }
+  }
+
+  private handleRayEntityIntersection(
+    ray: Coordinate[],
+    entities: Entity[]
+  ): Array<Reading | null> {
+    let intersections: Array<Reading | null> = [];
+    for (let i = 0; i < entities.length; i++) {
+      intersections.push(
+        ...this.handleRayIntersection(ray, entities[i].polygon, entities[i])
+      );
+    }
+
+    return intersections;
+  }
+
+  private handleRayIntersection(
+    ray: Coordinate[],
+    coordinates: Coordinate[],
+    entity: Entity | null
+  ): Array<Reading | null> {
+    let intersections: Array<Reading | null> = [];
+    for (let i = 0; i < coordinates.length; i++) {
+      const intersection: Reading | null = getIntersection(
+        ray[0],
+        ray[1],
+        coordinates[i],
+        coordinates[(i + 1) % coordinates.length]
+      );
+      if (intersection && entity != this.animal) {
+        intersections.push(intersection);
+      }
+    }
+    return intersections;
   }
 }

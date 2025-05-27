@@ -3,11 +3,13 @@ export class Movement {
   left: boolean = false;
   right: boolean = false;
   reverse: boolean = false;
-  constructor() {
-    this.#addKeyboardListeners();
+  constructor(isUser: boolean = false) {
+    if (isUser) {
+      this.addKeyboardListeners();
+    }
   }
 
-  #addKeyboardListeners() {
+  private addKeyboardListeners() {
     document.onkeydown = (event: KeyboardEvent) => {
       switch (event.key) {
         case "a":
