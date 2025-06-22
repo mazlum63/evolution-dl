@@ -5,6 +5,14 @@ export class NeuralNetwork {
       this.levels.push(new Level(neurons[i], neurons[i + 1]));
     }
   }
+
+  static feedForwards(inputs: number[], network: NeuralNetwork): boolean[] {
+    let outputs = Level.feedForward(inputs, network.levels[0]);
+    for (let i = 0; i < network.levels.length; i++) {
+      outputs = Level.feedForward(outputs, network.levels[i]);
+    }
+    return outputs.map((o) => (o == 1 ? true : false));
+  }
 }
 
 export class Level {
@@ -25,7 +33,7 @@ export class Level {
   }
 
   static randomize(level: Level) {
-    for (let i = 0; i < level.outputs.length; i++) {
+        for (let i = 0; i < level.outputs.length; i++) {
       level.biases[i] = Math.random() * 2 - 1;
       for (let j = 0; j < level.inputs.length; j++) {
         level.weights[j][i] = Math.random() * 2 - 1;
@@ -34,7 +42,7 @@ export class Level {
   }
 
   static feedForward(inputs: number[], level: Level): number[] {
-    for (let i = 0; i < inputs.length; i++) {
+    for (let i = 0; i < level.inputs.length; i++) {
       level.inputs[i] = inputs[i];
     }
     for (let i = 0; i < level.outputs.length; i++) {
