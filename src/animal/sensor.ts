@@ -4,8 +4,10 @@ import { Animal } from "./animal.js";
 import type { Reading } from "@models/reading.js";
 import type { Fruit } from "../terrain/fruit.js";
 import type { Entity } from "../terrain/entity.js";
+import { showSensor } from "../utils/html-elements-interactions.js";
 
 export class Sensor {
+  sensorStatus = "show";
   animal: Animal;
   rayCount: number = 10;
   rayLength: number = 200;
@@ -26,6 +28,7 @@ export class Sensor {
     this.rays.forEach((r: Coordinate[]) => {
       this.readings.push(this.getReadings(r, terrainBorders, animals, fruits));
     });
+    this.sensorStatus = showSensor;
   }
 
   private getReadings(
@@ -56,19 +59,28 @@ export class Sensor {
         endPoint = this.readings[i];
       }
 
-      context.beginPath();
-      context.lineWidth = 2;
-      context.strokeStyle = "yellow";
-      context.moveTo(this.rays[i][0].x, this.rays[i][0].y);
-      context.lineTo(endPoint!.x, endPoint!.y);
-      context.stroke();
+      if (this.sensorStatus == "show") {
+        context.beginPath();
+        context.lineWidth = 2;
+        context.strokeStyle = "yellow";
+        context.moveTo(this.rays[i][0].x, this.rays[i][0].y);
+        context.lineTo(endPoint!.x, endPoint!.y);
+        context.stroke();
+      }
 
-      context.beginPath();
+      if (this.sensorStatus != "hide") {
+        context.beginPath();
+        context.arc(endPoint?.x!, endPoint?.y!, 3, 0, Math.PI * 2);
+        context.fillStyle = "#7FFF00";
+        context.fill();
+      }
+
+      /* context.beginPath();
       context.lineWidth = 2;
       context.strokeStyle = "black";
       context.moveTo(this.rays[i][1].x, this.rays[i][1].y);
       context.lineTo(endPoint!.x, endPoint!.y);
-      context.stroke();
+      context.stroke(); */
     }
   }
 

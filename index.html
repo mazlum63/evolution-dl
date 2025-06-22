@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,8 +7,21 @@
     <title>Natural Selection</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div>
+        <label for="sensorStatus">sensor</label>
+        <select name="sensorStatus" id="sensorStatus">
+          <option value="show">show</option>
+          <option value="hide">hide</option>
+          <option value="half">intersect</option>
+        </select>
+      </div>
+    </div>
     <canvas id="simCanvas" width="1920" height="1080"></canvas>
+    <script
+      type="module"
+      src="/src/utils/html-elements-interactions.ts"
+    ></script>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
