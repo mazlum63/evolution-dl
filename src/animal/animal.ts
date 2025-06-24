@@ -5,21 +5,23 @@ import { Terrain } from "../terrain/terrain.js";
 import { Entity } from "../terrain/entity.js";
 import type { Fruit } from "../terrain/fruit.js";
 import { NeuralNetwork } from "../neuralnetwork.js";
+import { Energy } from "./animal-energy.js";
 
 export class Animal extends Entity {
   speed: number = 0;
   sensor: Sensor;
   movement: Movement;
   brain?: NeuralNetwork | null = null;
+  energy: Energy = new Energy();
   constructor(x: number, y: number, terrain: Terrain, isUser: boolean = false) {
     super(terrain, x, y, 30, 30, 0);
     this.sensor = new Sensor(this);
-if (!isUser) {
+    if (!isUser) {
       this.brain = new NeuralNetwork([this.sensor.rayCount, 16, 16, 4]);
     }
     this.movement = new Movement(isUser);
     this.terrain = terrain;
-    
+
   }
 
   override update(
@@ -41,6 +43,7 @@ if (!isUser) {
       this.movement.right = outputs[3];
     }
     super.update(terrainBorders, animals, fruits);
+    this.energy.decreaseEnergyIdle();
   }
 
   private move() {
@@ -72,6 +75,10 @@ if (!isUser) {
     ) {
       this.x = newX;
       this.y = newY;
+    }
+
+    if (this.movement.forward || this.movement.reverse) {
+      this.energy.decreaseEnergyMoving();
     }
   }
 

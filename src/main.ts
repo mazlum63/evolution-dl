@@ -7,7 +7,7 @@ const canvas = document.getElementById("simCanvas") as HTMLCanvasElement;
 const context = canvas!.getContext("2d") as CanvasRenderingContext2D;
 
 const terrain = new Terrain(canvas.width, canvas.height);
-const animals: Animal[] = [];
+let animals: Animal[] = [];
 const animal = new Animal(500, 500, terrain, true);
 const animal2 = new Animal(500, 500, terrain, false);
 animals.push(animal);
@@ -23,6 +23,8 @@ animate();
 function animate() {
   context.clearRect(0, 0, canvas.width, canvas.height);
   terrain.draw(context);
+
+  animals = animals.filter(a => a.energy.canSurvive())
   animals.forEach((a) => {
     a.update(terrain.borders, animals, fruits);
     a.draw(context);
