@@ -43,7 +43,9 @@ export class Animal extends Entity {
       this.movement.right = outputs[3];
     }
     super.update(terrainBorders, animals, fruits);
-    this.energy.decreaseEnergyIdle();
+    if (this.brain) {
+      this.energy.decreaseEnergyIdle();
+    }
   }
 
   private move() {
@@ -77,7 +79,7 @@ export class Animal extends Entity {
       this.y = newY;
     }
 
-    if (this.movement.forward || this.movement.reverse) {
+    if ((this.movement.forward || this.movement.reverse) && this.brain) {
       this.energy.decreaseEnergyMoving();
     }
   }
