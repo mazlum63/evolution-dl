@@ -3,16 +3,16 @@ import { lerp, polysIntersect } from "../utils/utils.js";
 import { Terrain } from "../terrain/terrain.js";
 
 export class Entity {
-  public width: number;
-  public height: number;
+  private width: number;
+  private height: number;
   public angle: number = 0;
   public x: number;
   public y: number;
 
-  public terrain: Terrain;
+  protected terrain: Terrain;
 
-  touched: boolean = false;
-  polygon: Coordinate[] = this.createPolygon();
+  private touched: boolean = false;
+  public polygon: Coordinate[] = this.createPolygon();
   constructor(
     terrain: Terrain,
     x: number = 0,
@@ -26,18 +26,18 @@ export class Entity {
     this.x =
       x == 0
         ? lerp(
-            this.width + this.terrain.distance,
-            this.terrain.width - this.terrain.distance - this.width,
-            Math.random()
-          )
+          this.width + this.terrain.distance,
+          this.terrain.width - this.terrain.distance - this.width,
+          Math.random()
+        )
         : x;
     this.y =
       y == 0
         ? lerp(
-            this.height + this.terrain.distance,
-            this.terrain.height - this.terrain.distance - this.height,
-            Math.random()
-          )
+          this.height + this.terrain.distance,
+          this.terrain.height - this.terrain.distance - this.height,
+          Math.random()
+        )
         : y;
     this.angle = angle;
   }

@@ -7,13 +7,13 @@ import type { Entity } from "../terrain/entity.js";
 import { showSensor } from "../utils/html-elements-interactions.js";
 
 export class Sensor {
-  sensorStatus = "show";
-  animal: Animal;
-  rayCount: number = 10;
-  rayLength: number = 200;
-  raySpread: number = Math.PI / 2;
-  rays: Coordinate[][] = [];
-  readings: Array<Reading | null> = [];
+  private sensorStatus = "show";
+  private animal: Animal;
+  public rayCount: number = 10;
+  public rayLength: number = 200;
+  private raySpread: number = Math.PI / 2;
+  private rays: Coordinate[][] = [];
+  public readings: Array<Reading | null> = [];
   constructor(animal: Animal) {
     this.animal = animal;
   }

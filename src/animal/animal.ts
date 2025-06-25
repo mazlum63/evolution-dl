@@ -8,7 +8,7 @@ import { NeuralNetwork } from "../neuralnetwork.js";
 import { Energy } from "./animal-energy.js";
 
 export class Animal extends Entity {
-  speed: number = 0;
+  private speed: number = 0;
   sensor: Sensor;
   movement: Movement;
   brain?: NeuralNetwork | null = null;

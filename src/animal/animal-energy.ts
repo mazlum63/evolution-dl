@@ -5,8 +5,8 @@ export class Energy {
     private maxEnergy = 100;
     private stamina = 10;
     private energyPerEat = 30;
-    normalizedEnergy = this.energy / this.maxEnergy;
-    normalizedstamina = this.stamina / this.maxEnergy;
+    public normalizedEnergy = this.energy / this.maxEnergy;
+    public normalizedstamina = this.stamina / this.maxEnergy;
     private staminaPercentage = 0.7;
 
     canSurvive(): boolean {

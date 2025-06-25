@@ -1,10 +1,10 @@
 import type { Coordinate } from "@models/coordinate";
 
 export class Terrain {
-  distance: number = 30;
-  width: number;
-  height: number;
-  borders: Coordinate[];
+  public distance: number = 30;
+  public width: number;
+  public height: number;
+  public borders: Coordinate[];
   constructor(width: number, height: number) {
     this.width = width;
     this.height = height;

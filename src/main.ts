@@ -9,7 +9,7 @@ const context = canvas!.getContext("2d") as CanvasRenderingContext2D;
 const terrain = new Terrain(canvas.width, canvas.height);
 let animals: Animal[] = [];
 const animal = new Animal(500, 500, terrain, true);
-const animal2 = new Animal(500, 500, terrain, false);
+const animal2 = new Animal(500, 500, terrain);
 animals.push(animal);
 animals.push(animal2);
 

@@ -1,8 +1,8 @@
 export class Movement {
-  forward: boolean = false;
-  left: boolean = false;
-  right: boolean = false;
-  reverse: boolean = false;
+  public forward: boolean = false;
+  public left: boolean = false;
+  public right: boolean = false;
+  public reverse: boolean = false;
   constructor(isUser: boolean = false) {
     if (isUser) {
       this.addKeyboardListeners();
