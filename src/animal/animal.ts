@@ -9,10 +9,10 @@ import { Energy } from "./animal-energy.js";
 
 export class Animal extends Entity {
   private speed: number = 0;
-  sensor: Sensor;
-  movement: Movement;
-  brain?: NeuralNetwork | null = null;
-  energy: Energy = new Energy();
+  private sensor: Sensor;
+  private movement: Movement;
+  private brain?: NeuralNetwork | null = null;
+  public energy: Energy = new Energy();
   constructor(x: number, y: number, terrain: Terrain, isUser: boolean = false) {
     super(terrain, x, y, 30, 30, 0);
     this.sensor = new Sensor(this);
