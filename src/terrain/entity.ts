@@ -17,8 +17,8 @@ export class Entity {
     terrain: Terrain,
     x: number = 0,
     y: number = 0,
-    width: number = 30,
-    height: number = 30,
+    width: number = 5,
+    height: number = 5,
     angle: number = Math.random()
   ) {
     (this.width = width), (this.height = height);

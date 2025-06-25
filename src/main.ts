@@ -9,12 +9,14 @@ const context = canvas!.getContext("2d") as CanvasRenderingContext2D;
 const terrain = new Terrain(canvas.width, canvas.height);
 let animals: Animal[] = [];
 const animal = new Animal(500, 500, terrain, true);
-const animal2 = new Animal(500, 500, terrain);
 animals.push(animal);
-animals.push(animal2);
+for (let i = 0; i < 0; i++) {
+  const animal2 = new Animal(500, 500, terrain);
+  animals.push(animal2);
+}
 
 const fruits: Fruit[] = [];
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 100; i++) {
   const newFruit = new Fruit(terrain);
   fruits.push(newFruit);
 }
@@ -30,7 +32,7 @@ function animate() {
     a.draw(context);
   });
   fruits.forEach((f) => {
-    f.update(terrain.borders, animals, []);
+    f.update();
     f.draw(context);
   });
   requestAnimationFrame(animate);
