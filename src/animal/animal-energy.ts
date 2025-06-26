@@ -1,12 +1,10 @@
 export class Energy {
     private energyUseageIdle = 0.2 / 60;
     private energyUseageMoving = 1 / 60;
+    private maxEnergy = 10;
     private energy = 10;
-    private maxEnergy = 100;
     private stamina = 10;
-    private energyPerEat = 30;
-    public normalizedEnergy = this.energy / this.maxEnergy;
-    public normalizedstamina = this.stamina / this.maxEnergy;
+    private energyPerEat = 20;
     private staminaPercentage = 0.7;
 
     canSurvive(): boolean {
@@ -66,5 +64,18 @@ export class Energy {
         if (this.stamina > this.maxEnergy) {
             this.stamina = this.maxEnergy;
         }
+    }
+
+
+    public getEnergyInputCount(): number {
+        return 1 + 1; // energy + stamina
+    }
+
+    get normalizedEnergy(): number {
+        return this.energy / this.maxEnergy;
+    }
+
+    get normalizedStamina(): number {
+        return this.stamina / this.maxEnergy;
     }
 }

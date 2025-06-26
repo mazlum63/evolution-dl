@@ -2,17 +2,18 @@ import "./style.css";
 import { Animal } from "./animal/animal";
 import { Terrain } from "./terrain/terrain.js";
 import { Fruit } from "./terrain/fruit.js";
+import { Herbivorous } from "./animal/herbivorous.js";
 
 const canvas = document.getElementById("simCanvas") as HTMLCanvasElement;
 const context = canvas!.getContext("2d") as CanvasRenderingContext2D;
 
 const terrain = new Terrain(canvas.width, canvas.height);
-let animals: Animal[] = [];
-const animal = new Animal(500, 500, terrain, true);
-animals.push(animal);
-for (let i = 0; i < 0; i++) {
-  const animal2 = new Animal(500, 500, terrain);
-  animals.push(animal2);
+let herbivorouses: Herbivorous[] = [];
+const animal = new Animal(terrain, true);
+
+for (let i = 0; i < 100; i++) {
+  const herbivorous = new Herbivorous(terrain);
+  herbivorouses.push(herbivorous);
 }
 
 const fruits: Fruit[] = [];
@@ -26,11 +27,16 @@ function animate() {
   context.clearRect(0, 0, canvas.width, canvas.height);
   terrain.draw(context);
 
-  animals = animals.filter(a => a.energy.canSurvive())
-  animals.forEach((a) => {
-    a.update(terrain.borders, animals, fruits);
+  var survidedAnimals = herbivorouses.filter(a => a.energy.canSurvive())
+  herbivorouses.length = 0;
+  herbivorouses.push(...survidedAnimals)
+  herbivorouses.forEach((a) => {
+    a.update(terrain.borders, herbivorouses, fruits);
     a.draw(context);
   });
+
+  /* animal.update(terrain.borders, herbivorouses, fruits)
+  animal.draw(context) */
   fruits.forEach((f) => {
     f.update();
     f.draw(context);

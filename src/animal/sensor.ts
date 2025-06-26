@@ -2,7 +2,7 @@ import type { Coordinate } from "@models/coordinate.js";
 import { getIntersection, lerp } from "../utils/utils.js";
 import { Animal } from "./animal.js";
 import type { Reading } from "@models/reading.js";
-import type { Fruit } from "../terrain/fruit.js";
+import { Fruit } from "../terrain/fruit.js";
 import type { Entity } from "../terrain/entity.js";
 import { showSensor } from "../utils/html-elements-interactions.js";
 
@@ -122,14 +122,25 @@ export class Sensor {
   ): Array<Reading | null> {
     let intersections: Array<Reading | null> = [];
     for (let i = 0; i < coordinates.length; i++) {
-      const intersection: Reading | null = getIntersection(
+      let intersection = getIntersection(
         ray[0],
         ray[1],
         coordinates[i],
         coordinates[(i + 1) % coordinates.length]
       );
+      let reading: Reading | null;
+      if (!intersection) {
+        reading = null;
+      } else {
+        reading = {
+          x: intersection.x,
+          y: intersection.y,
+          offset: intersection.offset,
+          isFruit: (entity != null && entity instanceof Fruit) ? 1 : 0
+        }
+      }
       if (intersection && entity != this.animal) {
-        intersections.push(intersection);
+        intersections.push(reading);
       }
     }
     return intersections;

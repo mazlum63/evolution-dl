@@ -8,12 +8,12 @@ import { NeuralNetwork } from "../neuralnetwork.js";
 import { Energy } from "./animal-energy.js";
 
 export class Animal extends Entity {
-  private speed: number = 0;
-  private sensor: Sensor;
-  private movement: Movement;
-  private brain?: NeuralNetwork | null = null;
+  protected speed: number = 0;
+  protected sensor: Sensor;
+  protected movement: Movement;
+  protected brain?: NeuralNetwork | null = null;
   public energy: Energy = new Energy();
-  constructor(x: number, y: number, terrain: Terrain, isUser: boolean = false) {
+  constructor(terrain: Terrain, isUser: boolean = false, x: number = 500, y: number = 500) {
     super(terrain, x, y, 30, 30, 0);
     this.sensor = new Sensor(this);
     if (!isUser) {
@@ -27,15 +27,17 @@ export class Animal extends Entity {
   override update(
     terrainBorders: Coordinate[],
     animals: Animal[],
-    fruits: Fruit[]
+    fruits: Fruit[],
+    useBrain: boolean = true
   ) {
     this.move();
     this.sensor.update(terrainBorders, animals, fruits);
-    let offsets = this.sensor.readings.map((r) =>
-      r == null ? 0 : 1 - r.offset
-    );
 
-    if (this.brain) {
+
+    if (this.brain && useBrain) {
+      let offsets = this.sensor.readings.map((r) =>
+        r == null ? 0 : 1 - r.offset
+      );
       const outputs = NeuralNetwork.feedForwards(offsets, this.brain);
       this.movement.forward = outputs[0];
       this.movement.reverse = outputs[1];
@@ -48,7 +50,7 @@ export class Animal extends Entity {
     }
   }
 
-  private move() {
+  protected move() {
     this.speed = 0;
     if (this.movement?.forward) {
       this.speed = 2;
@@ -79,7 +81,7 @@ export class Animal extends Entity {
       this.y = newY;
     }
 
-    if ((this.movement.forward || this.movement.reverse) && this.brain) {
+    if ((this.movement.forward || this.movement.reverse || this.movement.left || this.movement.right) && this.brain) {
       this.energy.decreaseEnergyMoving();
     }
   }
